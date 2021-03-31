@@ -1,7 +1,6 @@
 ﻿<?php
 
 
-/* ************ Classe métier Cvisiteur et Classe de contrôle Cvisiteurs **************** */
 require_once 'mesClasses/Cdao.php';
 
 class Cagent
@@ -12,12 +11,11 @@ class Cagent
     public $datenaissance;
     public $login; //=nom de code de l'agents
     public $mdp;
-    public $nationalite;
+    public $nationalite; //= pays pour la suite... si italien alors dans la table faut mattre italie
     public $nbspecialite;
 
     function __construct($sid,$snom,$sprenom,$sdatenaissance,$slogin,$smdp,$snationalite,$snbspecialite) //s pour send param envoyé
     {
-
         $this->id = $sid;
         $this->nom = $snom;
         $this->prenom = $sprenom;
@@ -36,8 +34,6 @@ class Cagents
     private $ocollAgentById;
     private $ocollAgentByLogin;
     private $tabAgent;
-    private $tabNationaliteAgent;
-    private $lesnationalites;
 
 
     public function __construct()
@@ -54,19 +50,7 @@ class Cagents
                                     $this->tabAgent[] = $oagent;
 				    $this->ocollAgentById[$unAgent['id']]=$oagent;
 				    $this->ocollAgentByLogin[$unAgent['login']] = $oagent;
-                                }
-                                
-                            $query = "SELECT distinct nationalite FROM agent";
-                            
-                            $lesnationalites = $odao->gettabDataFromSql($query);
-                            
-                            
-                            foreach ($lesnationalites as $unenatio)
-                            {
-                                $this->tabNationaliteAgent[] = $unenatio['nationalite'];
-                                
-                            }
-                                
+                                } 
                       
                         }
                   catch(PDOException $e) {
@@ -110,6 +94,33 @@ class Cagents
     function getTabAgent()
     {
         return $this->tabAgent;
+    }
+    
+    function Insertagent($sid,$snom,$sprenom,$sdatenaissance,$slogin,$smdp,$snationalite,$sspecialite)
+    {
+        $odao = new Cdao();
+        $query = "INSERT INTO agents(id,nom,prenom,datenaissance,login,mdp,nationalite,specialite) 
+            values('" . $sid . "', '" . $snom . "', '". $sprenom."','".$sdatenaissance. "','" .$slogin."','" .$smdp."','" .$snationalite. "','" .$sspecialite. "')";
+        $odao->Insert($query);
+    }
+    
+    function Updateagent($sid,$snom,$sprenom,$sdatenaissance,$slogin,$smdp,$snationalite,$sspecialite)
+    {
+        $odao = new Cdao();
+        $query = "Update agents SET nom='".$snom."prenom='".$sprenom.'"datenaissance='.$sdatenaissance.
+                '"login='.$slogin.'"mdp='.$smdp."'nationalite='".$snationalite.'specialite='.$sspecialite."WHERE id=".$sid;         
+        $odao->Update($query);
+    }
+    
+    function Deleteagent($sid)
+    {
+         //Suppression de la base
+        $odao = new Cdao();
+        $query = 'DELETE FROM agents WHERE id ="'.$sid.'"';
+        $odao->delete($query);
+        //suppression de l'objet du dictionnaire dont la clef est l'id du FHF : si objetde contrôle dans une variable de session
+        unset($this->ocollAgentById[$sid]);
+        unset($odao);
     }
 }
 

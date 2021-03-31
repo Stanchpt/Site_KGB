@@ -16,11 +16,6 @@ and open the template in the editor.
                 $formAction="seConnecter.php";
                 require_once 'include/form_login.php';
             ?>
-            <br>
-            <br>
-            <?php
-                require_once 'include/gestion-erreur.php';
-            ?>
         </div>
     </body>
 </html>

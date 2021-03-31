@@ -12,9 +12,8 @@
             $_SESSION['prenom'] = $oagent->prenom;
             $_SESSION['login'] = $oagent->login;//nom de code de l'agent
             $_SESSION['nationalite'] = $oagent->nationalite;
-            $_SESSION['role'] = 'Agent';
             
-            header('Location: Location:Client_Agent-Front_office/Accueil-Agent.php');
+            header('Location: Accueil-Agent.php');
         }
         else
             {
